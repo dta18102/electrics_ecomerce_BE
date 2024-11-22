@@ -20,11 +20,14 @@ MedimateserverApplication {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/").allowedOrigins("http://localhost:3000");
-				registry.addMapping("/api/*").allowedOrigins("http://localhost:3000");
-				//registry.addMapping("/api/auth/login").allowedOrigins("http://localhost:3000");
+				registry.addMapping("/**") // Cho phép tất cả các route
+						.allowedOrigins("http://localhost:3000") // Cho phép origin này
+						.allowedMethods("GET", "POST", "PUT","PATCH", "DELETE", "OPTIONS") // Các HTTP method được phép
+						.allowedHeaders("*") // Cho phép mọi header
+						.allowCredentials(true); // Nếu có sử dụng cookie
 			}
 		};
 	}
+
 }
 

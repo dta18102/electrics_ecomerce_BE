@@ -35,6 +35,10 @@ public class JwtFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+        if (request.getServletPath().contains("/api/feedback/product")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         if (request.getServletPath().contains("/test")) {
             filterChain.doFilter(request, response);
             return;
@@ -97,7 +101,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
                 return;
             }
-            System.out.println("Thông tin token sai");
+
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.getWriter().write(ResponseUtil.failedExpriration().getBody().toString());
         } catch (Exception ex) {

@@ -47,8 +47,10 @@ public class AddressController {
         try {
             String tokenInformation = request.getHeader("Authorization").substring(7);
             UserDto user = GsonUtil.gI().fromJson(JwtProvider.gI().getUsernameFromToken(tokenInformation), UserDto.class);
+            AddressDto.setIdUser(user.getId());
+            AddressDto.setIsDefault(false);
             AddressDto savedAddress = addressService.save(user.getId(), AddressDto);
-            return ResponseUtil.success();
+            return ResponseUtil.success(GsonUtil.gI().toJson(savedAddress));
         } catch (Exception ex) {
             System.out.println("Lỗi ở đây " + ex.getMessage());
             return ResponseUtil.failed();
@@ -61,8 +63,13 @@ public class AddressController {
         try {
             String tokenInformation = request.getHeader("Authorization").substring(7);
             UserDto user = GsonUtil.gI().fromJson(JwtProvider.gI().getUsernameFromToken(tokenInformation), UserDto.class);
+            if(addressDto.getIsDefault()){
+                AddressDto lastDefaultAddress = addressService.findByIsDefaultTrue(addressDto.getIdUser());
+                lastDefaultAddress.setIsDefault(false);
+                addressService.update(user.getId(), lastDefaultAddress);
+            }
             AddressDto updateDto = addressService.update(user.getId(), addressDto);
-            return ResponseUtil.success();
+            return ResponseUtil.success(GsonUtil.gI().toJson(updateDto));
         } catch (Exception ex) {
             System.out.println("Lỗi ở đây nè " + ex.getMessage());
             return ResponseUtil.failed();

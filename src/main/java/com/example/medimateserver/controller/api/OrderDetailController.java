@@ -1,10 +1,7 @@
 package com.example.medimateserver.controller.api;
 
 import com.example.medimateserver.config.jwt.JwtProvider;
-import com.example.medimateserver.dto.OrderDetailDto;
-import com.example.medimateserver.dto.OrderDto;
-import com.example.medimateserver.dto.TokenDto;
-import com.example.medimateserver.dto.UserDto;
+import com.example.medimateserver.dto.*;
 import com.example.medimateserver.entity.OrderDetail;
 import com.example.medimateserver.service.OrderDetailService;
 import com.example.medimateserver.service.OrderService;
@@ -40,6 +37,19 @@ public class OrderDetailController {
             return ResponseUtil.success(jsons);
         } catch (Exception ex) {
             System.out.println("Lỗi ở đây " + ex.getMessage());
+            return ResponseUtil.failed();
+        }
+    }
+
+    @PutMapping
+    public ResponseEntity<?> updateFeedback(HttpServletRequest request, @RequestBody OrderDetailDto orderDetailDto) {
+        try {
+            String tokenInformation = request.getHeader("Authorization").substring(7);
+            UserDto user = GsonUtil.gI().fromJson(JwtProvider.gI().getUsernameFromToken(tokenInformation), UserDto.class);
+            orderDetailService.update(orderDetailDto);
+            return ResponseUtil.success();
+        } catch (Exception ex) {
+            System.out.println("Lỗi ở đây nè " + ex.getMessage());
             return ResponseUtil.failed();
         }
     }

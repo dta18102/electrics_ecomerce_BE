@@ -11,10 +11,16 @@ import java.util.Date;
 public class CouponDto {
     private Integer id;
     private String code;
+    private String name;
     private String description;
     private Integer point;
     private Integer discountPercent;
     private Integer expirationTime;
     private String image;
     private Integer status;
+    private Integer idUser;
+    private Integer idOrder;
+    private Date startTime;
+    private Date endTime;
+    private Integer quantity;
 }

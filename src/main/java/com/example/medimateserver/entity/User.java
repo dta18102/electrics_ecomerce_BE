@@ -38,6 +38,8 @@ public class User {
     private Integer gender;
     @Column(name = "image")
     private String image;
+    @Column(name = "favourite")
+    private String favourite;
     @Column(name = "status")
     private Integer status;
     // Không cần constructor có tham số, Lombok sẽ tự động tạo ra

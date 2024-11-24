@@ -68,7 +68,7 @@ public class UserController {
             if (updatedUser == null) {
                 return ResponseUtil.failed(403);
             }
-            return ResponseUtil.success();
+            return ResponseUtil.success(GsonUtil.gI().toJson(updatedUser));
         } catch (Exception ex) {
             return ResponseUtil.failed();
         }

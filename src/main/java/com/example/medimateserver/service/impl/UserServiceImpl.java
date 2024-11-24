@@ -93,6 +93,9 @@ public class UserServiceImpl implements UserService {
         if (userDto.getImage() != null) {
             existingUser.setImage(userDto.getImage());
         }
+        if (userDto.getFavourite() != null) {
+            existingUser.setFavourite(userDto.getFavourite());
+        }
         User updatedCategory = userRepository.save(existingUser);
         return ConvertUtil.gI().toDto(updatedCategory, UserDto.class);
     }

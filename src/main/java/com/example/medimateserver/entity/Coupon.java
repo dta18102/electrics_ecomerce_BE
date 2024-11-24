@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "coupon")
 @Data
@@ -26,4 +28,16 @@ public class Coupon {
     private String image;
     @Column(name="status")
     private Integer status;
+    @Column(name = "id_user")
+    private Integer idUser;
+    @Column(name = "id_order")
+    private Integer idOrder;
+    @Column(name = "start_time")
+    private Date startTime;
+    @Column(name = "end_time")
+    private Date endTime;
+    @Column(name = "quantity")
+    private Integer quantity;
+    @Column(name = "name")
+    private String name;
 }

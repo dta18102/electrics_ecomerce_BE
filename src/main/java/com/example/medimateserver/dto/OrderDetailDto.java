@@ -15,4 +15,5 @@ public class OrderDetailDto {
     private Integer quantity;
     private ProductDto product;
     private OrderDto orders;
+    private Boolean isFeedback;
 }

@@ -43,9 +43,9 @@ public class Product {
     @Column(name = "status")
     private Integer status;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "id_unit", referencedColumnName = "id", insertable = false, updatable = false)
-    private Unit unit;
+//    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+//    @JoinColumn(name = "id_unit", referencedColumnName = "id", insertable = false, updatable = false)
+//    private Unit unit;
 
     // Quan hệ n-1 với Category
     @ManyToOne(fetch = FetchType.EAGER, optional = false)

@@ -28,7 +28,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDto> findAll() {
         List<Product> products = productRepository.findAll();
-        System.out.println(products.get(0).getUnit().getName());
+        //System.out.println(products.get(0).getUnit().getName());
         return products.stream()
                 .map(product -> ConvertUtil.gI().toDto(product, ProductDto.class))
                 .collect(Collectors.toList());

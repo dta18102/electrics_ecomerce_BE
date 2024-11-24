@@ -129,7 +129,7 @@ public class OrderServiceImpl implements OrderService {
                     cartDetailRepository.deleteById(newId);
                     Integer discountFromProduct = Integer.parseInt(((int) product.get().getPrice()*product.get().getDiscountPercent()/100)+"");
                     OrderDetail.OrderDetailId newOrderDetailId = new OrderDetail.OrderDetailId(order.getId(), product.get().getId());
-                    OrderDetail newOrder = new OrderDetail(newOrderDetailId, product.get().getPrice(), discountFromProduct, cartDetail.getQuantity());
+                    OrderDetail newOrder = new OrderDetail(newOrderDetailId, product.get().getPrice(), discountFromProduct, cartDetail.getQuantity(), false);
                     newOrder.setOrders(order);
                     newOrder.setProduct(product.get());
                     orderDetailRepository.save(newOrder);
@@ -173,7 +173,7 @@ public class OrderServiceImpl implements OrderService {
             }
             Integer discountFromProduct = Integer.parseInt(((int)product.get().getPrice()*product.get().getDiscountPercent()/100)+"");
             OrderDetail.OrderDetailId newId = new OrderDetail.OrderDetailId(paymentDto.getIdUser(), product.get().getId());
-            OrderDetail newOrder = new OrderDetail(newId, product.get().getPrice(), discountFromProduct, cartDetail.getQuantity());
+            OrderDetail newOrder = new OrderDetail(newId, product.get().getPrice(), discountFromProduct, cartDetail.getQuantity(), false);
             orderDetails.add(newOrder);
         }
         return orderDetails;

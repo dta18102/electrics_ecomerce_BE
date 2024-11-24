@@ -43,6 +43,12 @@ public class AddressServiceImpl implements AddressService {
                 })
                 .orElseThrow(() -> new EntityNotFoundException("We not found with id: " + id));
     }
+
+    @Override
+    public AddressDto findByIsDefaultTrue(Integer idUser) {
+        return ConvertUtil.gI().toDto(addressRepository.findByIsDefaultTrue(idUser), AddressDto.class);
+    }
+
     @Override
     public AddressDto save(Integer id, AddressDto addressDto) {
         Address savedAddress = ConvertUtil.gI().toEntity(addressDto, Address.class);

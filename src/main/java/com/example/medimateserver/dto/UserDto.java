@@ -28,6 +28,7 @@ public class UserDto {
     private Date birthday;
     private Integer gender;
     private String image;
+    private String favourite;
     private Integer status;
 
 }

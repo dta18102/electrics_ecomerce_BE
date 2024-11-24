@@ -11,6 +11,8 @@ public interface AddressService {
 
     AddressDto findById(Integer id);
 
+    AddressDto findByIsDefaultTrue(Integer idUser);
+
     AddressDto save(Integer id, AddressDto addressDto);
 
     AddressDto update(Integer id, AddressDto addressDto);

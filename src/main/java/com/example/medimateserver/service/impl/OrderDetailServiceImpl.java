@@ -32,21 +32,30 @@ public class OrderDetailServiceImpl implements OrderDetailService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void update(OrderDetailDto orderDetailDto) {
+//        OrderDetail ord = toEntity(orderDetailDto);
+//        return toDto(orderDetailRepository.save(ord));
+        orderDetailRepository.updateIsFeedback(orderDetailDto.getIdOrder(), orderDetailDto.getIdProduct());
+    }
+
 
     public OrderDetailDto toDto(OrderDetail orderDetail) {
         OrderDetailDto dto = new OrderDetailDto();
         dto.setIdOrder(orderDetail.getId().getIdOrder());
         dto.setIdProduct(orderDetail.getId().getIdProduct());
+        dto.setProductPrice(orderDetail.getProductPrice());
         dto.setDiscountPrice(orderDetail.getDiscountPrice());
         dto.setQuantity(orderDetail.getQuantity());
         dto.setProduct(ConvertUtil.gI().toDto(orderDetail.getProduct(), ProductDto.class));
         dto.setOrders(ConvertUtil.gI().toDto(orderDetail.getOrders(), OrderDto.class));
+        dto.setIsFeedback((orderDetail.getIsFeedback()));
         return dto;
     }
 
     public OrderDetail toEntity(OrderDetailDto dto) {
         OrderDetail.OrderDetailId id = new OrderDetail.OrderDetailId(dto.getIdOrder(), dto.getIdProduct()); // Cách 2, sau khi thêm static
-        return new OrderDetail(id, dto.getProductPrice(), dto.getDiscountPrice(), dto.getQuantity());
+        return new OrderDetail(id, dto.getProductPrice(), dto.getDiscountPrice(), dto.getQuantity(), dto.getIsFeedback());
     }
 
 }

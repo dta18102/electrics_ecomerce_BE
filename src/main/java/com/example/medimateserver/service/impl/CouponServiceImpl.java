@@ -48,12 +48,12 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public void deleteById(Integer id) {
-
+         couponRepository.deleteById(id);
     }
 
     @Override
     public CouponDto findByCode(String code) {
-        return null;
+        return ConvertUtil.gI().toDto(couponRepository.findByCode(code), CouponDto.class);
     }
 
 }

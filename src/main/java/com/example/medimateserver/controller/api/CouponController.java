@@ -43,17 +43,82 @@ public class CouponController {
 
     @PostMapping
     public ResponseEntity<?> createCoupon(@RequestBody CouponDto couponDto) {
-        CouponDto savedCoupon = couponService.save(couponDto);
-        return ResponseUtil.success();
+        try {
+            CouponDto exitsting = couponService.findByCode(couponDto.getCode().trim());
+            if(exitsting != null ){
+                return ResponseUtil.failed(400,"Mã giảm giá với mã code "+couponDto.getCode()+" đã tồn tại");
+            }
+            couponDto.setStatus(1);
+            CouponDto savedCoupon = couponService.save(couponDto);
+            return ResponseUtil.success(GsonUtil.gI().toJson(savedCoupon));
+        }catch (Exception ex){
+            System.out.println(ex.toString());
+            return ResponseUtil.failed();
+        }
     }
 
     @PutMapping
-    public ResponseEntity<?> updateCoupon(@PathVariable String code, @RequestBody Coupon Coupon) {
-        return ResponseUtil.success();
+    public ResponseEntity<?> updateCoupon( @RequestBody CouponDto coupon) {
+        try {
+            CouponDto exitsting = couponService.findById(coupon.getId());
+            if(exitsting == null){
+                return ResponseUtil.failed(400, "This coupon is not exits !");
+            }
+            if(coupon.getCode() != null){
+                exitsting.setCode(coupon.getCode());
+            }
+            if(coupon.getName() != null){
+                exitsting.setName(coupon.getName());
+            }
+            if(coupon.getDiscountPercent() != null){
+                exitsting.setDiscountPercent(coupon.getDiscountPercent());
+            }
+            if(coupon.getPoint() != null){
+                exitsting.setPoint(coupon.getPoint());
+            }
+            if(coupon.getImage() != null){
+                exitsting.setImage(coupon.getImage());
+            }
+            if(coupon.getStatus() != null){
+                exitsting.setStatus(coupon.getStatus());
+            }
+            if(coupon.getStartTime() != null){
+                exitsting.setStartTime(coupon.getStartTime());
+            }
+            if(coupon.getEndTime() != null){
+                exitsting.setEndTime(coupon.getEndTime());
+            }
+            if(coupon.getQuantity() != null){
+                exitsting.setQuantity(coupon.getQuantity());
+            }
+            if(coupon.getIdUser() != null){
+                exitsting.setIdUser(coupon.getIdUser());
+            }
+            if(coupon.getIdOrder() != null){
+                exitsting.setIdOrder(coupon.getIdOrder());
+            }
+            CouponDto savedCoupon = couponService.save(exitsting);
+            return ResponseUtil.success(GsonUtil.gI().toJson(savedCoupon));
+
+        }catch (Exception ex){
+            System.out.println(ex.toString());
+            return ResponseUtil.failed();
+        }
+
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteCoupon(@PathVariable String code) {
-        return ResponseUtil.success();
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteCoupon(@PathVariable Integer id) {
+        try {
+            CouponDto exitsting = couponService.findById(id);
+            if(exitsting == null ){
+                return ResponseUtil.failed(400,"Mã giảm giá với ID "+id+" không tồn tại, vui lòng load lại trang");
+            }
+             couponService.deleteById(id);
+            return ResponseUtil.success();
+        }catch (Exception ex){
+            System.out.println(ex.toString());
+            return ResponseUtil.failed();
+        }
     }
 }

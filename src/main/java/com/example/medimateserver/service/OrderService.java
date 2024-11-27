@@ -14,5 +14,5 @@ public interface OrderService {
     OrderDto save(PaymentDto paymentDto);
     List<OrderDto> findByIdUser(Integer id);
     OrderDto saveWithOrderDetail(PaymentDto paymentDto);
-    OrderDto confirmOrder(Integer id);
+    OrderDto confirmOrder(Integer id, Integer staus);
 }

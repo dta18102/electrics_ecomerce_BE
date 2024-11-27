@@ -51,6 +51,10 @@ public class JwtFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+        if (request.getServletPath().contains("/api/auth/register")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         if (request.getServletPath().contains("/api/auth/login_with_google")) {
             filterChain.doFilter(request, response);
             return;
@@ -77,7 +81,6 @@ public class JwtFilter extends OncePerRequestFilter {
             UserDto user = GsonUtil.gI().fromJson(jwtProvider.getUsernameFromToken(tokenInformation), UserDto.class);
             UserDto userDto = userService.findById(user.getId());
             if (user==null) {
-                System.out.println("123213");
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 response.getWriter().write(HttpStatus.UNAUTHORIZED.value());
                 return;
@@ -105,7 +108,6 @@ public class JwtFilter extends OncePerRequestFilter {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.getWriter().write(ResponseUtil.failedExpriration().getBody().toString());
         } catch (Exception ex) {
-            System.out.println("Không có token lỗi ở đây");
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.getWriter().write(ResponseUtil.failedExpriration().getBody().toString());
         }

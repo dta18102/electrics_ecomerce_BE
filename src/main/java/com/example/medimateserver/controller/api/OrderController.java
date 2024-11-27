@@ -43,13 +43,29 @@ public class OrderController {
     @Autowired
     private TokenService tokenService;
     @GetMapping
-    public ResponseEntity<?> getAllOrder(HttpServletRequest request) {
+    public ResponseEntity<?> getAllOrderByUserId(HttpServletRequest request) {
         try {
             String tokenInformation = request.getHeader("Authorization").substring(7);
             UserDto user = GsonUtil.gI().fromJson(JwtProvider.gI().getUsernameFromToken(tokenInformation), UserDto.class);
             TokenDto tokenDto = tokenService.findById(user.getId());
             if (JwtProvider.gI().verifyToken(tokenInformation, tokenDto)) {
                 return ResponseUtil.success(GsonUtil.gI().toJson(orderService.findByIdUser(user.getId())));
+            }
+            return ResponseUtil.failed();
+        } catch (Exception ex) {
+            System.out.println("Lỗi ở đây " + ex.getMessage());
+            return ResponseUtil.failed();
+        }
+
+    }
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllOrder(HttpServletRequest request) {
+        try {
+            String tokenInformation = request.getHeader("Authorization").substring(7);
+            UserDto user = GsonUtil.gI().fromJson(JwtProvider.gI().getUsernameFromToken(tokenInformation), UserDto.class);
+            TokenDto tokenDto = tokenService.findById(user.getId());
+            if (JwtProvider.gI().verifyToken(tokenInformation, tokenDto)) {
+                return ResponseUtil.success(GsonUtil.gI().toJson(orderService.findAll()));
             }
             return ResponseUtil.failed();
         } catch (Exception ex) {
@@ -76,6 +92,18 @@ public class OrderController {
             return ResponseUtil.failed();
         }
     }
+
+    @PutMapping()
+    public ResponseEntity<?> confirmOrder(HttpServletRequest request, @RequestBody OrderDto order)  throws JsonProcessingException {
+        try {
+            String tokenInformation = request.getHeader("Authorization").substring(7);
+            UserDto user = GsonUtil.gI().fromJson(JwtProvider.gI().getUsernameFromToken(tokenInformation), UserDto.class);
+            OrderDto confirm = orderService.confirmOrder(order.getId(), order.getStatus());
+            return ResponseUtil.success(GsonUtil.gI().toJson(confirm));
+        } catch (Exception ex) {
+            return ResponseUtil.failed();
+        }
+    }
     @PostMapping("/{id}")
     public ResponseEntity<?> createOrder(HttpServletRequest request, @PathVariable Integer id)  throws JsonProcessingException {
         try {
@@ -83,7 +111,7 @@ public class OrderController {
             UserDto user = GsonUtil.gI().fromJson(JwtProvider.gI().getUsernameFromToken(tokenInformation), UserDto.class);
             if(user.getIdRole().toString().equals("1")) {
                 Generate generate = new Generate();
-                OrderDto orderDto = orderService.confirmOrder(id);
+                OrderDto orderDto = orderService.confirmOrder(id, 1);
                 DeviceDto deviceDto = deviceService.findById(orderDto.getIdUser());
                 URL url = new URL("https://fcm.googleapis.com/v1/projects/clientsellingmedicine/messages:send");
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();

@@ -48,7 +48,12 @@ public class AddressController {
             String tokenInformation = request.getHeader("Authorization").substring(7);
             UserDto user = GsonUtil.gI().fromJson(JwtProvider.gI().getUsernameFromToken(tokenInformation), UserDto.class);
             AddressDto.setIdUser(user.getId());
-            AddressDto.setIsDefault(false);
+            List<AddressDto> exits = addressService.findByIdUser(user.getId());
+            System.out.println(exits.isEmpty());
+            if(exits.isEmpty())
+                AddressDto.setIsDefault(true);
+            else
+                AddressDto.setIsDefault(false);
             AddressDto savedAddress = addressService.save(user.getId(), AddressDto);
             return ResponseUtil.success(GsonUtil.gI().toJson(savedAddress));
         } catch (Exception ex) {

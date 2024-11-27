@@ -16,6 +16,11 @@ public class Orders {
     private Integer id;
     @Column(name = "id_user")
     private Integer idUser;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "id_user", referencedColumnName = "id", insertable = false, updatable = false)
+    private User user;
+
     @Column(name = "code")
     private String code;
     @Column(name = "payment_method")

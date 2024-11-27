@@ -21,7 +21,8 @@ MedimateserverApplication {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**") // Cho phép tất cả các route
-						.allowedOrigins("http://localhost:3000") // Cho phép origin này
+						.allowedOrigins("http://localhost:3000")
+						//.allowedOrigins("https://8ec7-14-161-4-114.ngrok-free.app")// Cho phép origin này
 						.allowedMethods("GET", "POST", "PUT","PATCH", "DELETE", "OPTIONS") // Các HTTP method được phép
 						.allowedHeaders("*") // Cho phép mọi header
 						.allowCredentials(true); // Nếu có sử dụng cookie

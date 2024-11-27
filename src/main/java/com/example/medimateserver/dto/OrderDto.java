@@ -12,6 +12,7 @@ import java.util.Date;
 public class OrderDto {
     private Integer id;
     private Integer idUser;
+    private UserDto user;
     private String code;
     private String paymentMethod;
     private Integer discountCoupon;

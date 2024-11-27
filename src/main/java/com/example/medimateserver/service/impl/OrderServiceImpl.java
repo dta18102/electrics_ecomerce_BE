@@ -194,10 +194,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDto confirmOrder(Integer id) {
+    public OrderDto confirmOrder(Integer id, Integer status) {
         Optional<Orders> newOrder = orderRepository.findById(id);
         Orders uOrder = newOrder.get();
-        uOrder.setStatus(1);
+        uOrder.setStatus(status);
         OrderDto orderDto = ConvertUtil.gI().toDto(orderRepository.save(uOrder),OrderDto.class);
         return orderDto;
     }

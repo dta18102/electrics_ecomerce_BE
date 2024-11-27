@@ -104,13 +104,22 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UserDto userPL) {
         try {
+            UserDto exitingUserWithEmail = userService.findByEmail(userPL.getEmail());
+            if(exitingUserWithEmail != null){
+                return ResponseUtil.failed(400, "Email "+userPL.getEmail()+" đã được đăng ký!");
+            }
+            UserDto exitingUserWithPhone = userService.findByPhone(userPL.getPhone());
+            if(exitingUserWithPhone != null){
+                return ResponseUtil.failed(400, "SĐT "+userPL.getPhone()+" đã được đăng ký!");
+            }
             userPL.setIdRole(2);
             userPL.setStatus(1);
             userPL.setRank("Đồng");
             userPL.setPoint(0);
-            userService.save(userPL);
-            return ResponseUtil.success();
+            UserDto newUser = userService.save(userPL);
+            return ResponseUtil.success(GsonUtil.gI().toJson(newUser));
         } catch (Exception ex) {
+            System.out.println(ex.toString());
             return ResponseUtil.failed();
         }
     }
@@ -132,6 +141,7 @@ public class AuthController {
             userService.save(userPL);
             return ResponseUtil.success();
         } catch (Exception ex) {
+            System.out.println(ex.toString());
             return ResponseUtil.failed();
         }
     }

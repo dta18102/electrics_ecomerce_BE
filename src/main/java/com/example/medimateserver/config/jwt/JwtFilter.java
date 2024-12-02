@@ -44,8 +44,10 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
         if (request.getServletPath().contains("/api/product")) {
-            filterChain.doFilter(request, response);
-            return;
+            if(request.getMethod().equalsIgnoreCase("GET")){
+                filterChain.doFilter(request, response);
+                return;
+            }
         }
         if (request.getServletPath().contains("/api/auth/login")) {
             filterChain.doFilter(request, response);

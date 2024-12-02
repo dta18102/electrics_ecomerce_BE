@@ -129,10 +129,6 @@ public class CartDetailController {
     @DeleteMapping
     public ResponseEntity<?> deleteCartDetailB(HttpServletRequest request, @RequestBody List<CartDetailDto> cartDetailDto) throws JsonProcessingException {
         try {
-            System.out.println("213");
-//            for (CartDetailDto cart: cartDetailDto) {
-//                cart.setUser(null);
-//            }
             String tokenInformation = request.getHeader("Authorization").substring(7);
             UserDto user = GsonUtil.gI().fromJson(JwtProvider.gI().getUsernameFromToken(tokenInformation), UserDto.class);
             cartDetailService.deleteCartDetail(user.getId(), cartDetailDto);

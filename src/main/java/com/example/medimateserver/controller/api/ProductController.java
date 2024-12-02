@@ -1,6 +1,9 @@
 package com.example.medimateserver.controller.api;
 
+import com.example.medimateserver.config.jwt.JwtProvider;
 import com.example.medimateserver.dto.ProductDto;
+import com.example.medimateserver.dto.UserDto;
+import com.example.medimateserver.entity.Product;
 import com.example.medimateserver.filter.ProductFilter;
 import com.example.medimateserver.service.ProductService;
 import com.example.medimateserver.service.TokenService;
@@ -8,12 +11,14 @@ import com.example.medimateserver.service.UserService;
 import com.example.medimateserver.util.GsonUtil;
 import com.example.medimateserver.util.ResponseUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/product", produces = "application/json")
@@ -29,7 +34,10 @@ public class ProductController {
     public ResponseEntity<?> getAllProduct() throws JsonProcessingException {
         try {
             List<ProductDto> productList = productService.findAllWithPage();
-            String jsons = GsonUtil.gI().toJson(productList);
+            List<ProductDto> prods = productList.stream()
+                    .filter(prod -> prod.getStatus() == 1)  //filter status == 1
+                    .toList();
+            String jsons = GsonUtil.gI().toJson(prods);
             return ResponseUtil.success(jsons);
         } catch (Exception ex) {
             return ResponseUtil.failed();
@@ -99,25 +107,63 @@ public class ProductController {
 
     // Create a new category
     @PostMapping
-    public ResponseEntity<?> createCategory(@RequestBody ProductDto productDto) {
-        ProductDto savedCategory = productService.save(productDto);
-        return ResponseUtil.success();
+    public ResponseEntity<?> createProduct(HttpServletRequest request, @RequestBody ProductDto productDto) {
+
+        try {
+            productDto.setDiscountPercent(10);
+            productDto.setStatus(1);
+            ProductDto savedCategory = productService.save(productDto);
+//            ProductDto find = productService.save(savedCategory);
+            return ResponseUtil.success(GsonUtil.gI().toJson(savedCategory));
+        } catch (Exception ex) {
+            return ResponseUtil.failed();
+        }
+
     }
 
     // Update a category
     @PutMapping
-    public ResponseEntity<?> updateCategory(@PathVariable Integer id, @RequestBody ProductDto category) {
-        return ResponseUtil.success();
+    public ResponseEntity<?> updateProduct( @RequestBody ProductDto productUpdate) {
+        try{
+            ProductDto prod = productService.findById(productUpdate.getId());
+
+            if(productUpdate.getIdCategory() != null){
+                prod.setIdCategory(productUpdate.getIdCategory());
+            }
+            if(productUpdate.getName() != null){
+                prod.setName(productUpdate.getName());
+            }
+            if(productUpdate.getDescription() != null){
+                prod.setDescription(productUpdate.getDescription());
+            }
+            if(productUpdate.getDiscountPercent() != null){
+                prod.setDiscountPercent(productUpdate.getDiscountPercent());
+            }
+            if(productUpdate.getPrice() != null){
+                prod.setPrice(productUpdate.getPrice());
+            }
+            if(productUpdate.getQuantity() != null){
+                prod.setQuantity(productUpdate.getQuantity());
+            }
+            if(productUpdate.getImage() != null){
+                prod.setImage(productUpdate.getImage());
+            }
+            ProductDto savedProduct = productService.save(prod);
+            return ResponseUtil.success(GsonUtil.gI().toJson(savedProduct));
+        }catch (Exception ex){
+            return ResponseUtil.failed();
+        }
+
     }
 
     // Delete a category
-    @DeleteMapping
-    public ResponseEntity<?> deleteCategory(@PathVariable Integer id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteProduct(@PathVariable Integer id) {
         try {
             ProductDto product = productService.findById(id);
             product.setStatus(0);
-            productService.save(product);
-            return ResponseUtil.success();
+            ProductDto prod = productService.save(product);
+            return ResponseUtil.success(GsonUtil.gI().toJson(prod));
         } catch (Exception ex) {
             return ResponseUtil.failed();
         }

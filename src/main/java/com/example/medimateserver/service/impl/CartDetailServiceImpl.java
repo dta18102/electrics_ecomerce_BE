@@ -46,7 +46,7 @@ public class CartDetailServiceImpl implements CartDetailService {
     }
 
     @Override
-    public void saveCartDetail(CartDetailDto cartDetailDto) {
+    public CartDetailDto saveCartDetail(CartDetailDto cartDetailDto) {
 
         CartDetail.CartDetailId id = new CartDetail.CartDetailId(cartDetailDto.getUser().getId(), cartDetailDto.getProduct().getId());
 
@@ -65,7 +65,7 @@ public class CartDetailServiceImpl implements CartDetailService {
                 CartDetail uCartDetail = cartDetailOptional.get();
                 if (uProduct.getQuantity() - (uCartDetail.getQuantity() + cartDetailDto.getQuantity()) >= 0) {
                     uCartDetail.setQuantity(uCartDetail.getQuantity() + cartDetailDto.getQuantity());
-                    cartDetailRepository.save(uCartDetail);
+                    return  toDto(cartDetailRepository.save(uCartDetail));
                 } else {
                     throw new IllegalArgumentException("Không đủ số lượng sản phâẩm");
                 }
@@ -78,7 +78,7 @@ public class CartDetailServiceImpl implements CartDetailService {
                 newCartDetail.setId(id);
                 if (uProduct.getQuantity() - cartDetailDto.getQuantity() >= 0 && cartDetailDto.getQuantity() > 0) {
                     newCartDetail.setQuantity(cartDetailDto.getQuantity());
-                    cartDetailRepository.save(newCartDetail);
+                    return  toDto(cartDetailRepository.save(newCartDetail));
                 } else {
                     throw new IllegalArgumentException("Không đủ số lượng sản phâẩm");
                 }
@@ -86,6 +86,7 @@ public class CartDetailServiceImpl implements CartDetailService {
         } else {
             // Xử lý trường hợp không tìm thấy product hoặc user
             // Ví dụ: ném ngoại lệ hoặc trả về thông báo lỗi
+            return  null;
         }
     }
 
@@ -155,6 +156,7 @@ public class CartDetailServiceImpl implements CartDetailService {
         dto.setQuantity(CartDetail.getQuantity());
         dto.setProduct(ConvertUtil.gI().toDto(CartDetail.getProduct(), ProductDto.class));
         dto.setUser(ConvertUtil.gI().toDto(CartDetail.getUser(), UserDto.class));
+        dto.setCreate_at(CartDetail.getCreate_at());
         return dto;
     }
 

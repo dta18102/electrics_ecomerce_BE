@@ -18,6 +18,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,10 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/api/orders", produces = "application/json")
 public class OrderController {
+
+    @Value("${app.base-url}")
+    private String baseUrl;
+
     @Autowired
     OrderService orderService;
     @Autowired
@@ -80,15 +85,16 @@ public class OrderController {
             String tokenInformation = request.getHeader("Authorization").substring(7);
             UserDto user = GsonUtil.gI().fromJson(JwtProvider.gI().getUsernameFromToken(tokenInformation), UserDto.class);
             paymentDto.setIdUser(user.getId());
-            if (paymentDto.getOrder().getPaymentMethod().contains("COD")) {
+            if (paymentDto.getPaymentMethod().contains("COD")) {
                 OrderDto savedOrder = orderService.save(paymentDto);
-            } else if (paymentDto.getOrder().getPaymentMethod().contains("MOMO")) {
+            } else if (paymentDto.getPaymentMethod().contains("MoMo")) {
                 OrderDto savedOrder = orderService.save(paymentDto);
                 System.out.println(getPayUrl(savedOrder));
                 return ResponseUtil.successLink(getPayUrl(savedOrder));
             }
             return ResponseUtil.success();
         } catch (Exception ex) {
+            System.out.println(ex);
             return ResponseUtil.failed();
         }
     }
@@ -167,11 +173,16 @@ public class OrderController {
     }
 
     public String getPayUrl(OrderDto orderDto) throws Exception {
+//        MomoCreateRequest.getInstance().setAmount(orderDto.getTotal());
+//        MomoCreateRequest.getInstance().setRequestId(String.valueOf(System.currentTimeMillis()));
+//        MomoCreateRequest.getInstance().setOrderId(String.valueOf(System.currentTimeMillis()));
+//        MomoCreateRequest.getInstance().setStartTime(System.currentTimeMillis());
+        MomoCreateRequest.getInstance().setOrderInfo(orderDto.getId() + "");
         MomoCreateRequest.getInstance().setAmount(orderDto.getTotal());
         MomoCreateRequest.getInstance().setRequestId(String.valueOf(System.currentTimeMillis()));
         MomoCreateRequest.getInstance().setOrderId(String.valueOf(System.currentTimeMillis()));
         MomoCreateRequest.getInstance().setStartTime(System.currentTimeMillis());
-        MomoCreateRequest.getInstance().setOrderInfo(orderDto.getId() + "");
+        MomoCreateRequest.getInstance().setRedirectUrl(baseUrl+"/cart");
         String requestRawData = new StringBuilder()
                 .append(Parameter.ACCESS_KEY).append("=").append(Parameter.DEV_ACCESS_KEY).append("&")
                 .append(Parameter.AMOUNT).append("=").append(Long.toString(MomoCreateRequest.getInstance().getAmount())).append("&")

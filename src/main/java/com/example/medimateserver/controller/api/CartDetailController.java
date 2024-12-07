@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +38,7 @@ public class CartDetailController {
             String tokenInformation = request.getHeader("Authorization").substring(7);
             UserDto user = GsonUtil.gI().fromJson(JwtProvider.gI().getUsernameFromToken(tokenInformation), UserDto.class);
             List<CartDetailDto> cartDetailList = cartDetailService.findByIdUser(user.getId());
+            cartDetailList.sort(Comparator.comparing(CartDetailDto::getCreate_at).reversed());
             String jsons = GsonUtil.gI().toJson(cartDetailList);
             return ResponseUtil.success(jsons);
         } catch (Exception ex) {
@@ -89,8 +91,8 @@ public class CartDetailController {
             String tokenInformation = request.getHeader("Authorization").substring(7);
             UserDto user = GsonUtil.gI().fromJson(JwtProvider.gI().getUsernameFromToken(tokenInformation), UserDto.class);
             cartDetailDto.setUser(user);
-            cartDetailService.saveCartDetail(cartDetailDto);
-            return ResponseUtil.success();
+            CartDetailDto cart =  cartDetailService.saveCartDetail(cartDetailDto);
+            return ResponseUtil.success(GsonUtil.gI().toJson(cart));
         } catch (Exception ex) {
             System.out.println("Lỗi ở đây " + ex.getMessage());
             return ResponseUtil.failed();

@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.Date;
 
 @Entity
 @Table(name = "cart_detail")
@@ -18,6 +20,9 @@ public class CartDetail {
 
     @Column(name = "quantity")
     private Integer quantity;
+
+    @Column(name = "create_at")
+    private Timestamp create_at;
 
     public CartDetail(CartDetailId id, Integer quantity) {
         this.id  = id;

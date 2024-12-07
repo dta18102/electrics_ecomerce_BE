@@ -11,7 +11,7 @@ import java.util.List;
 public interface CartDetailService {
     List<CartDetailDto> findAll();
     List<CartDetailDto> findByIdUser(Integer id);
-    void saveCartDetail(CartDetailDto cartDetailDto);
+    CartDetailDto saveCartDetail(CartDetailDto cartDetailDto);
     void updateCartDetail(CartDetailDto cartDetailDto);
     void deleteCartDetail(Integer idUser, Integer idProduct);
     void deleteCartDetail(Integer idUser, List<CartDetailDto> cartDetailDto);

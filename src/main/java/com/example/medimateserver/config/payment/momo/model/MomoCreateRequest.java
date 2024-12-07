@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MomoCreateRequest {
     private String orderInfo;
-    private int amount;
+    private Integer amount;
     private String partnerName;
     private String requestType;
     private String redirectUrl;
@@ -27,10 +27,10 @@ public class MomoCreateRequest {
     public static MomoCreateRequest getInstance() {
         if (momoCreateRequest == null) {
             momoCreateRequest = new MomoCreateRequest();
-            momoCreateRequest.setOrderInfo("Pay for Medimate orders");
+            momoCreateRequest.setOrderInfo("Payment for EEShop order");
             momoCreateRequest.setPartnerName("test MoMo");
             momoCreateRequest.setRequestType("captureWallet");
-            momoCreateRequest.setRedirectUrl("myapp://payment-completed");
+            momoCreateRequest.setRedirectUrl(" https://49a3-14-169-255-212.ngrok-free.app/cart");
             momoCreateRequest.setIpnUrl("https://google.com.vn");
             momoCreateRequest.setStoreId("Medimateserver");
             momoCreateRequest.setExtraData("");

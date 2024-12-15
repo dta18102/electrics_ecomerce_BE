@@ -18,8 +18,8 @@ public class CouponDto {
     private Integer expirationTime;
     private String image;
     private Integer status;
-    private Integer idUser;
-    private Integer idOrder;
+//    private Integer idUser;
+//    private Integer idOrder;
     private Date startTime;
     private Date endTime;
     private Integer quantity;

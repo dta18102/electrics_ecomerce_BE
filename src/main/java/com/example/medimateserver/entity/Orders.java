@@ -20,7 +20,8 @@ public class Orders {
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "id_user", referencedColumnName = "id", insertable = false, updatable = false)
     private User user;
-
+    @Column(name = "id_coupon")
+    private Integer idCoupon;
     @Column(name = "code")
     private String code;
     @Column(name = "payment_method")

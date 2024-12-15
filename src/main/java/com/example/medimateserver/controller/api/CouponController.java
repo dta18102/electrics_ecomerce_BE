@@ -91,12 +91,8 @@ public class CouponController {
             if(coupon.getQuantity() != null){
                 exitsting.setQuantity(coupon.getQuantity());
             }
-            if(coupon.getIdUser() != null){
-                exitsting.setIdUser(coupon.getIdUser());
-            }
-            if(coupon.getIdOrder() != null){
-                exitsting.setIdOrder(coupon.getIdOrder());
-            }
+
+
             CouponDto savedCoupon = couponService.save(exitsting);
             return ResponseUtil.success(GsonUtil.gI().toJson(savedCoupon));
 

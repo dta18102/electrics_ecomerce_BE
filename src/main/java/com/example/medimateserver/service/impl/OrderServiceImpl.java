@@ -53,44 +53,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto save(PaymentDto paymentDto) {
 
-//            for (CartDetailDto cartDetail : paymentDto.getCartDetailDtoList()) {
-//                Optional<Product> product = productRepository.findById(cartDetail.getProduct().getId());
-//                CartDetail.CartDetailId newId = new CartDetail.CartDetailId(paymentDto.getIdUser(), product.get().getId());
-//                Optional<CartDetail> cartDetail1 = cartDetailRepository.findById(newId);
-//                if (!cartDetail1.isPresent() || !product.isPresent() || cartDetail.getQuantity() > product.get().getQuantity() && product.get().getStatus() == 0) {
-//                    throw new IllegalArgumentException("Sản phẩm không đủ hoặc không bán nữa " + GsonUtil.gI().toJson(product.get()));
-//                }
-//                // Sản phẩm gửi lên thoả mãn trong csdl thì bắt đầu tính tổng tiền, một khi khác là báo lỗi
-//                if (cartDetail.getProduct().getId().toString().equals(product.get().getId().toString())) {
-//                    Integer discountFromProduct = Integer.parseInt(((int) product.get().getPrice()*product.get().getDiscountPercent()/100)+"");
-//                    discountProduct += discountFromProduct;
-//                    total += cartDetail.getQuantity() * product.get().getPrice() - discountFromProduct;
-//                } else {
-//                    throw new IllegalArgumentException("Sản phẩm không đủ hoặc không bán nữa " + GsonUtil.gI().toJson(product.get()));
-//                }
-//            }
 
-            // Neu co khuyen mai thi tinh tien giam tu khuyen mai k thi thoi
-//            Date now = new Date();
-//            if (paymentDto.getCouponDetailId() != null) {
-//                Optional<CouponDetail> couponDetail = couponDetailRepository.findById(paymentDto.getCouponDetailId());
-//                if (couponDetail.isPresent() && couponDetail.get().getIdUser() == paymentDto.getIdUser() && couponDetail.get().getStatus() == 1) {
-//                    Date date = couponDetail.get().getEndTime();
-//                    // Kiểm tra xem ngày hiện tại có sau ngày hết hạn k, nếu sau, trả về true, lỗi
-//                    boolean isAfter = now.after(date);
-//                    if (isAfter) {
-//                        throw new IllegalArgumentException("Khuyến mãi hết hạn!");
-//                    }
-//                    discountCoupon = Integer.parseInt(((int)total * couponDetail.get().getCoupon().getDiscountPercent()/100)+"");
-//                    total -= discountCoupon;
-//                } else {
-//                    throw new IllegalArgumentException("Khuyến mãi đã sử dụng hoặc khng đng!");
-//                }
-//            }
-//
-//            point = Integer.parseInt(((int)total*1/1000) + "");
 
-        Date now = new Date();
+            Date now = new Date();
             Optional<User> userDb = userRepository.findById(paymentDto.getIdUser());
             if (!userDb.isPresent()) {
                 throw new IllegalArgumentException("User lỗi!");
@@ -110,6 +75,13 @@ public class OrderServiceImpl implements OrderService {
             order.setPaymentMethod(paymentDto.getPaymentMethod());
             order.setUserAddress(paymentDto.getAddress());
             order.setStatus(2);
+
+            if (paymentDto.getCouponCode() != null && !paymentDto.getCouponCode().isEmpty()) {
+                Optional<Coupon> coupon = Optional.ofNullable(couponRepository.findByCode(paymentDto.getCouponCode()));
+                order.setIdCoupon(coupon.get().getId());
+            }else {
+                order.setIdCoupon(0);
+            }
             order = orderRepository.save(order);
 
 
@@ -142,7 +114,7 @@ public class OrderServiceImpl implements OrderService {
             productRepository.saveAll(productList);
 
             // Lưu lại trạng thái coupon
-            if (paymentDto.getCouponCode() != null && paymentDto.getCouponCode().isEmpty()) {
+            if (paymentDto.getCouponCode() != null && !paymentDto.getCouponCode().isEmpty()) {
                 Optional<Coupon> coupon = Optional.ofNullable(couponRepository.findByCode(paymentDto.getCouponCode()));
                 if (coupon.isPresent() ) {
                     Coupon savedCoupon = coupon.get();

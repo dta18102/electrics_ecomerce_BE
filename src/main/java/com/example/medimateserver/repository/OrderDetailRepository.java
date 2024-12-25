@@ -8,12 +8,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public interface OrderDetailRepository extends JpaRepository<OrderDetail, OrderDetail.OrderDetailId> {
     @Query("SELECT od FROM OrderDetail od WHERE od.id.idOrder = :idOrder")
     List<OrderDetail> findByIdOrder(@Param("idOrder") Integer idOrder);
+
     @Modifying
     @Query(value = "INSERT INTO order_detail (id_order, id_product, discount_price, quantity) VALUES (:idOrder, :idProduct, :discountPrice, :quantity)", nativeQuery = true)
     void saveCustome(@Param("idOrder") Integer idOrder,
@@ -29,6 +32,15 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, OrderD
 //    @Modifying
 //    @Query("UPDATE OrderDetail od SET od.isFeedback = true WHERE od.idUser = :idUser AND od.idProduct = :idProduct")
 //    OrderDetail update(@Param("idUser") Integer idUser, @Param("idProduct") Integer idProduct);
+    
+    @Query(value = "SELECT od.* " +
+                "FROM order_detail od " +
+                "JOIN orders o ON od.id_order = o.id " +
+                "WHERE o.order_time BETWEEN :startTime AND :endTime", 
+        nativeQuery = true)
+    List<OrderDetail> findOrderDetailsByOrderTimeRange(
+            @Param("startTime") LocalDate startTime, 
+            @Param("endTime") LocalDate endTime);
 
 
 }

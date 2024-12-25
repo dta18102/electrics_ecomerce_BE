@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+
 @RestController
 @RequestMapping(value = "/api/user", produces = "application/json")
 //@CrossOrigin(origins = "http://localhost:3000")
@@ -44,9 +45,27 @@ public class UserController {
             return ResponseUtil.failed();
         }
     }
-
+    @GetMapping("/allUser")
+    public ResponseEntity<?> getAllUser(HttpServletRequest request) {
+        try {
+            List<UserDto> users = userService.findAll();
+            List<UserDto> usersFromDatabase = users.stream()
+                   
+                    .filter(user -> user.getStatus() == 1)
+                    .toList();
+            return ResponseUtil.success(GsonUtil.gI().toJson(usersFromDatabase));
+        } catch (Exception ex) {
+            return ResponseUtil.failed();
+        }
+    }
+    public String getMethodName(@RequestParam String param) {
+        return new String();
+    }
+    
     @PostMapping
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserDto userDto) {
+    public ResponseEntity<?> createUser(HttpServletRequest request,@Valid @RequestBody UserDto userDto) {
+        System.out.println(" và user"+userDto);
+        if(userDto.getIdRole()!=1)
         userDto.setIdRole(2);
         userDto.setStatus(1);
         userDto.setRank("Đồng");
@@ -63,6 +82,7 @@ public class UserController {
     public ResponseEntity<?> updateUser(HttpServletRequest request, @RequestBody UserDto userDto) {
         try {
             String tokenInformation = request.getHeader("Authorization").substring(7);
+            
             UserDto user = GsonUtil.gI().fromJson(JwtProvider.gI().getUsernameFromToken(tokenInformation), UserDto.class);
             UserDto updatedUser = userService.update(user.getId(), userDto);
             if (updatedUser == null) {
@@ -74,10 +94,12 @@ public class UserController {
         }
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Integer id) {
         try {
-            userService.deleteById(id);
+           UserDto user=userService.findById(id);
+           user.setStatus(0);
+           userService.save(user);
             return ResponseUtil.success();
         } catch (Exception ex) {
             return ResponseUtil.failed(403);

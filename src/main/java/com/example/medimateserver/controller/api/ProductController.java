@@ -68,6 +68,7 @@ public class ProductController {
         try {
             List<ProductDto> productList = productService.getHaveSoldProduct();
             String jsons = GsonUtil.gI().toJson(productList);
+            
             return ResponseUtil.success(jsons);
         } catch (Exception ex) {
             return ResponseUtil.failed();
@@ -78,6 +79,7 @@ public class ProductController {
         try {
             List<ProductDto> productList = productService.getBestPromotionProduct();
             String jsons = GsonUtil.gI().toJson(productList);
+            
             return ResponseUtil.success(jsons);
         } catch (Exception ex) {
             return ResponseUtil.failed();
@@ -97,6 +99,7 @@ public class ProductController {
     @PostMapping("/filter")
     public ResponseEntity<?> getFilterProduct(@RequestBody ProductFilter productFilter) throws JsonProcessingException {
         try {
+            System.out.println(productFilter);
             List<ProductDto> productList = productService.findWithFilterTraditional(productFilter);
             String jsons = GsonUtil.gI().toJson(productList);
             return ResponseUtil.success(jsons);

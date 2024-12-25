@@ -10,4 +10,5 @@ public interface OrderDetailService {
     List<OrderDetailDto> findAll();
     List<OrderDetailDto> findByIdUser(Integer id);
     void update(OrderDetailDto orderDetailDto);
+    List<OrderDetailDto> findOrderDetailsByOrderTimeRange(String startTime, String endTime);
 }

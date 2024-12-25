@@ -68,22 +68,16 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query("SELECT p FROM Product p ORDER BY p.id DESC LIMIT 10")
     List<Product> getNewProduct();
 
-    @Query(value = "SELECT p.*, SUM(od.quantity) AS sales_count " +
-            "FROM order_detail od " +
-            "JOIN product p ON od.id_product = p.id " +
-            "WHERE p.status = 1 " +
-            "GROUP BY od.id_product, p.id, p.name " +
-            "ORDER BY sales_count DESC " +
-            "LIMIT 50", nativeQuery = true)
+    @Query("SELECT p FROM Product p ORDER BY p.id DESC LIMIT 10")
     List<Product> getBestSellersProduct();
 
-    @Query(value = "SELECT DISTINCT p.* " + // Assuming 'product' is the entity name
-            "FROM Product p " +
+    @Query(value = "SELECT  p.*,o.order_time " + // Assuming 'product' is the entity name
+            "FROM product p " +
             "JOIN order_detail od ON od.id_product = p.id " +
             "JOIN orders o ON o.id = od.id_order " +
             "WHERE o.status = 1 " +
             "AND p.status = 1 " +
-            "GROUP BY p.id",
+            "GROUP BY p.id ",
             nativeQuery = true)
     List<Product> getHaveSoldProduct();
 

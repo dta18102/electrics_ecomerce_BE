@@ -44,7 +44,8 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
         if (request.getServletPath().contains("/api/product")) {
-            if(request.getMethod().equalsIgnoreCase("GET")){
+            if (request.getMethod().equalsIgnoreCase("GET") || 
+            request.getMethod().equalsIgnoreCase("POST")) {
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -110,6 +111,7 @@ public class JwtFilter extends OncePerRequestFilter {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.getWriter().write(ResponseUtil.failedExpriration().getBody().toString());
         } catch (Exception ex) {
+            System.out.println("Lỗi ở đây nè " + ex.getMessage());
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.getWriter().write(ResponseUtil.failedExpriration().getBody().toString());
         }

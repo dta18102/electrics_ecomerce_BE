@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping(value = "/api/order_detail", produces = "application/json")
 public class OrderDetailController {
@@ -53,4 +54,25 @@ public class OrderDetailController {
             return ResponseUtil.failed();
         }
     }
+    @GetMapping("/by-order-time")
+    public ResponseEntity<?> getOrderDetailsByOrderTimeRange(
+            @RequestParam String startTime, 
+            @RequestParam String endTime,
+            HttpServletRequest request) {
+        try{
+            String tokenInformation = request.getHeader("Authorization").substring(7);
+            UserDto user = GsonUtil.gI().fromJson(JwtProvider.gI().getUsernameFromToken(tokenInformation), UserDto.class);
+        // Gọi service để lấy danh sách OrderDetailDto
+
+            List<OrderDetailDto> orderDetails = orderDetailService.findOrderDetailsByOrderTimeRange(startTime, endTime);
+            String jsons = GsonUtil.gI().toJson(orderDetails);
+            return ResponseUtil.success(jsons);
+        } 
+            catch (Exception ex) {
+            System.out.println("Lỗi ở đây nè " + ex.getMessage());
+            return ResponseUtil.failed();
+        }
+        // Trả về ResponseEntity với danh sách kết quả
+    }
+    
 }

@@ -11,6 +11,9 @@ import com.example.medimateserver.util.ConvertUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +41,16 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 //        return toDto(orderDetailRepository.save(ord));
         orderDetailRepository.updateIsFeedback(orderDetailDto.getIdOrder(), orderDetailDto.getIdProduct());
     }
-
+    @Override
+    public List<OrderDetailDto> findOrderDetailsByOrderTimeRange(String startTime, String endTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate startDateTime = LocalDate.parse(startTime, formatter);
+        LocalDate endDateTime = LocalDate.parse(endTime, formatter);
+        List<OrderDetail> orderDetails = orderDetailRepository.findOrderDetailsByOrderTimeRange(startDateTime, endDateTime);
+        return orderDetails.stream()
+                .map(this::toDto) // Sử dụng hàm toDto trong cùng lớp
+                .collect(Collectors.toList());
+    }
 
     public OrderDetailDto toDto(OrderDetail orderDetail) {
         OrderDetailDto dto = new OrderDetailDto();
